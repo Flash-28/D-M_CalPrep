@@ -15,6 +15,7 @@ measurement / tuning sessions.
 - Audyssey mode (Reference / L-C-R Bypass / Flat / Off)
 - Surround mode (Stereo / Direct / Movie / Game / Music / Auro3D)
 - ECO mode (On / Auto / Off)
+- Auto Lip Sync (On / Off)
 - Subwoofer LPF for LFE (250 Hz)
 - Per-speaker Size, Level, Distance, Crossover (all 13.2 channels)
 - 2-Channel Playback: Setting (Auto/Manual), Front size, Subwoofer Mode
@@ -82,6 +83,7 @@ Both macros force:
 - Surround mode: **Stereo**
 - ECO mode: **Off**
 - Subwoofer LPF for LFE: **250 Hz**
+- Auto Lip Sync: **Off**
 
 | Mode | Targets                                         |
 |------|-------------------------------------------------|
@@ -95,7 +97,7 @@ Use the matching `r` (Restore) afterward to return to your saved configuration.
 Each menu cycle redraws the screen with four sections:
 
 1. **Header**: model, IP, power state (green/red)
-2. **Status**: Audyssey, Volume, Source, Eco, Surround
+2. **Status**: Audyssey, Volume, Source, Eco, Surround, Lip Sync
 3. **Speakers table**: Size / Level / Distance / Crossover for every configured channel
 4. **2-Channel Mode table**: Front L and Front R with Size / Level / Distance / Crossover,
    plus the current Setting and SW Mode on the header line

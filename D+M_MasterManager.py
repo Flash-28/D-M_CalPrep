@@ -58,8 +58,6 @@ class RecieverManager:
             "Bk Dolby R":   {"lvl": "18", "dst": "31", "sz": "15", "xo": "13"}
         }
 
-# Still missing index 5, 6 (distances) might be taken by speaker count and sub 1+2     
-
     # --- DISCOVERY ---
     def discover(self):
         print("[*] Searching for Denon AVR...")
@@ -257,6 +255,10 @@ class RecieverManager:
         lpf = self.get_https_xml("/ajax/speakers/get_config?type=7", "speakers")
         state['audio']['lpf_lfe'] = (lpf.findtext(".//LPFforLFE") or "120").strip() if lpf is not None else "120"
 
+        # 5e. Auto Lip Sync (10443 audio type 6): 1=On, 2=Off
+        lipsync = self.get_https_xml("/ajax/audio/get_config?type=6", "audio")
+        state['audio']['lipsync'] = (lipsync.findtext(".//AutoLipSync") or "0").strip() if lipsync is not None else "0"
+
         # 6. 2-Channel Playback (10443 speakers type 9): Setting (1=Auto/2=Manual),
         #    Front (2=Small/3=Large), SubwooferMode (1=LFE/2=LFE+Main). Also
         #    capture L/R distance (cm) and level (dB) from DistanceList/LevelList
@@ -333,8 +335,8 @@ class RecieverManager:
         except:
             vol_line = f"{a.get('vol_db')} dB"
         print(f" AUDYSSEY: {aud_modes.get(a.get('audyssey'), 'Unknown')} | VOL: {vol_line}")
-        mute_state = (a.get('mute') or 'off').upper()
-        mute_display = "[ MUTED ]" if mute_state == "ON" else "off"
+#        mute_state = (a.get('mute') or 'off').upper()
+#        mute_display = "[ MUTED ]" if mute_state == "ON" else "off"
 #        print(f" SOURCE: {a.get('display_name')} ({a.get('raw_input')}) | MUTE: {mute_display}")
         eco_modes = {"1": "On", "2": "Auto", "3": "Off"}
         eco_lbl = eco_modes.get(a.get('eco'), "Unknown")
@@ -342,7 +344,8 @@ class RecieverManager:
         surround_code = a.get('surround_mode') or ''
         surround_label = {"DIRECT": "Direct", "PURE DIRECT": "Pure Direct",
                           "STEREO": "Stereo"}.get(surround_code, surround_code or "Unknown")
-        print(f" SURROUND: {surround_label}")
+        lipsync_lbl = {"1": "On", "2": "Off"}.get(a.get('lipsync'), "Unknown")
+        print(f" SURROUND: {surround_label} | LIP SYNC: {lipsync_lbl}")
         print("-" * 54)
 
         rows = []
@@ -520,6 +523,15 @@ class RecieverManager:
             print(f"  [~] Sub LPF: {current_lpf} -> {backup_lpf} Hz")
             changes += 1
 
+        # Auto Lip Sync (10443 audio type 6): 1=On, 2=Off
+        backup_ls  = backup['audio'].get('lipsync')
+        current_ls = current['audio'].get('lipsync')
+        if backup_ls and backup_ls != current_ls:
+            self.set_config_https("6", f"<AutoLipSync>{backup_ls}</AutoLipSync>", "audio")
+            ls_lbl = {"1": "On", "2": "Off"}
+            print(f"  [~] Lip Sync: {ls_lbl.get(current_ls, current_ls)} -> {ls_lbl.get(backup_ls, backup_ls)}")
+            changes += 1
+
         # 2-Channel Playback. Front, SubwooferMode, and L/R distance/level are
         # read-only while Setting=Auto, so enter Manual first if any of those
         # need to change, apply them, then set final Setting last (which may
@@ -653,6 +665,9 @@ class RecieverManager:
 
         print("  [+] Setting Subwoofer LPF for LFE to 250 Hz for calibration...")
         self.set_config_https("7", "<LPFforLFE>250</LPFforLFE>", "speakers")
+
+        print("  [+] Disabling Auto Lip Sync for calibration...")
+        self.set_config_https("6", "<AutoLipSync>2</AutoLipSync>", "audio")
 
         print("  [+] Calibration environment ready.")
 
