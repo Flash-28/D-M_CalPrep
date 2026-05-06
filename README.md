@@ -1,4 +1,4 @@
-# D+M Master Manager
+# D+M Calibration Preparation
 
 Interactive Python control script for compatible Denon and Marantz receivers
 that expose the same HTTPS AJAX API on port 10443.
@@ -30,7 +30,7 @@ measurement / tuning sessions.
 ## Running
 
 ```bash
-python3 D+M_MasterManager.py
+python3 D+M_CalPrep.py
 ```
 
 On launch the script SSDP-discovers the AVR on the local network. If discovery
