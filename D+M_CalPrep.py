@@ -711,12 +711,12 @@ class RecieverManager:
         state['speakers'] = {n: state['speakers'][n] for n in target_names}
         self.apply_state(state)
 
-        print("  [+] Activating Stereo mode for calibration...")
-        confirmed = self.set_surround_mode("MSSTEREO")
-        if confirmed == "STEREO":
-            print("  [+] Stereo mode confirmed active.")
+        print("  [+] Activating Direct mode for calibration...")
+        confirmed = self.set_surround_mode("MSDIRECT")
+        if confirmed == "DIRECT":
+            print("  [+] Direct mode confirmed active.")
         else:
-            print(f"  [!] Stereo mode may not have set correctly (got: {confirmed})")
+            print(f"  [!] Direct mode may not have set correctly (got: {confirmed})")
 
         print("  [+] Forcing ECO mode Off for calibration...")
         self.set_config_https("3", "<Mode>3</Mode>", "general")
