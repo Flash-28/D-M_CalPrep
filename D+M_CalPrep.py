@@ -688,7 +688,7 @@ class RecieverManager:
         print(f"[*] Preparing for {mode.upper()} CALIBRATION...")
         state = self.fetch_full_state()
         state['audio']['audyssey'] = "4"    # Off
-        state['audio']['vol_db'] = "-10"  # 70 Absolute
+        state['audio']['vol_db'] = "-18"  # 68 Absolute
         # Force 2-ch to Manual + Large front + LFE (not LFE+Main) for calibration,
         # with L/R distance=0 cm and level=0 dB.
         state['audio']['2ch'] = {'setting': '2', 'front': '3', 'sub_mode': '1',
